@@ -1,6 +1,3 @@
-const mongoose = require("mongoose");
-require("dotenv").config();
-
 const Cake = require("../models/cake.model");
 
 const cakes = [
@@ -40,23 +37,18 @@ const cakes = [
 
 const seedDatabase = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    const count = await Cake.countDocuments();
 
-    console.log("Connected to MongoDB");
-
-    await Cake.deleteMany({});
-
-    await Cake.insertMany(cakes);
-
-    console.log(`${cakes.length} cakes inserted successfully`);
-
-    await mongoose.disconnect();
-
-    console.log("Database connection closed");
+    if (count === 0) {
+      await Cake.insertMany(cakes);
+      console.log(`${cakes.length} cakes inserted successfully`);
+    } else {
+      console.log(`Catalog already contains ${count} cakes. Skipping seed.`);
+    }
   } catch (error) {
-    console.error("Seeding failed:", error);
-    process.exit(1);
+    console.error("Seeding failed:", error.message);
+    throw error;
   }
 };
 
-seedDatabase();
+module.exports = seedDatabase;
