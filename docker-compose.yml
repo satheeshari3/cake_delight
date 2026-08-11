@@ -1,0 +1,117 @@
+services:
+
+  # =========================
+  # MongoDB
+  # =========================
+  mongodb:
+    image: mongo:7
+    container_name: cake-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+  
+
+  # =========================
+  # RabbitMQ
+  # =========================
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: cake-delight-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  #Api-Gateway
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: cake-api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      CATALOG_SERVICE_URL: http://catalog-service:3001
+      RATING_SERVICE_URL: http://rating-service:3003
+      ORDER_SERVICE_URL: http://order-service:3002
+      NOTIFICATION_SERVICE_URL: http://notification-service:3004
+    depends_on:
+      - catalog-service
+      - rating-service
+      - order-service
+      - notification-service
+
+  # =========================
+  # Catalog Service
+  # =========================
+  catalog-service:
+    build: ./catalog-service
+    container_name: cake-catalog-service
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      MONGO_URI: mongodb://mongodb:27017/cake_catalog_db
+    depends_on:
+      - mongodb
+
+  # =========================
+  # Order Service
+  # =========================
+  order-service:
+    build: ./order-service
+    container_name: cake-order-service
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: 3002
+      MONGO_URI: mongodb://mongodb:27017/cake_delight_orders
+      CATALOG_SERVICE_URL: http://catalog-service:3001
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - mongodb
+      - rabbitmq
+      - catalog-service
+
+  # =========================
+  # Rating Service
+  # =========================
+  rating-service:
+    build: ./rating-service
+    container_name: cake-rating-service
+    ports:
+      - "3003:3003"
+    environment:
+      PORT: 3003
+      MONGO_URI: mongodb://mongodb:27017/cake_rating_db
+    depends_on:
+      - mongodb
+    
+  ########
+  #notification
+  ########
+
+  notification-service:
+    build: ./notification-service
+    container_name: cake-notification-service
+    ports:
+      - "3004:3004"
+    environment:
+      PORT: 3004
+      MONGO_URI: mongodb://mongodb:27017/cake_delight_notifications
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - mongodb
+      - rabbitmq
+
+#### frontend
+  frontend:
+    build: ./frontend
+    container_name: cake-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - api-gateway
+
+volumes:
+  mongo-data:
