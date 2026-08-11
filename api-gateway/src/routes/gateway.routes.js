@@ -17,10 +17,14 @@ const NOTIFICATION_SERVICE_URL = process.env.NOTIFICATION_SERVICE_URL;
 router.get("/cakes", async (req, res) => {
   try {
     const response = await axios.get(
-      `${CATALOG_SERVICE_URL}/api/cakes`
+      `${CATALOG_SERVICE_URL}/api/cakes`,
+      {
+        params: req.query
+      }
     );
 
     res.status(response.status).json(response.data);
+
   } catch (error) {
     console.error(error.message);
 
