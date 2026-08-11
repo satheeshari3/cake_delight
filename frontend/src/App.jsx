@@ -12,6 +12,8 @@ const userId = "user123";
 
 function App() {
   const [basketCount, setBasketCount] = useState(0);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [isNotificationsUnread, setIsNotificationsUnread] = useState(false);
 
   useEffect(() => {
     const fetchBasketCount = async () => {
@@ -24,13 +26,35 @@ function App() {
       }
     };
 
+    const fetchNotificationCount = async () => {
+      try {
+        const response = await api.get(`/notifications/${userId}`);
+        const notifications = response?.data?.data || [];
+        const unread = notifications.length > 0 && localStorage.getItem("cake-delight-notifications-seen") !== "true";
+        setNotificationCount(notifications.length);
+        setIsNotificationsUnread(unread);
+      } catch (error) {
+        console.error("Failed to fetch notification count:", error);
+      }
+    };
+
     fetchBasketCount();
+    fetchNotificationCount();
   }, []);
+
+  const handleNotificationsRead = () => {
+    localStorage.setItem("cake-delight-notifications-seen", "true");
+    setIsNotificationsUnread(false);
+  };
 
   return (
     <BrowserRouter>
       <div className="app-shell">
-        <Navbar basketCount={basketCount} />
+        <Navbar
+          basketCount={basketCount}
+          notificationCount={notificationCount}
+          isNotificationsUnread={isNotificationsUnread}
+        />
 
         <main>
           <Routes>
@@ -38,7 +62,7 @@ function App() {
             <Route path="/cake/:cakeId" element={<CakeDetails setBasketCount={setBasketCount} />} />
             <Route path="/basket" element={<Basket setBasketCount={setBasketCount} />} />
             <Route path="/orders" element={<Orders />} />
-            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/notifications" element={<Notifications onReadNotifications={handleNotificationsRead} />} />
           </Routes>
         </main>
       </div>

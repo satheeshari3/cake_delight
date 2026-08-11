@@ -5,7 +5,7 @@ import ErrorMessage from "../components/ErrorMessage";
 
 const userId = "user123";
 
-const Notifications = () => {
+const Notifications = ({ onReadNotifications }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -16,6 +16,9 @@ const Notifications = () => {
         setLoading(true);
         const response = await api.get(`/notifications/${userId}`);
         setNotifications(response?.data?.data || []);
+        if (onReadNotifications) {
+          onReadNotifications();
+        }
       } catch (err) {
         console.error("Failed to fetch notifications:", err);
         setError("Unable to fetch notifications right now.");
@@ -25,7 +28,7 @@ const Notifications = () => {
     };
 
     fetchNotifications();
-  }, []);
+  }, [onReadNotifications]);
 
   if (loading) return <Loading text="Loading notifications..." />;
 

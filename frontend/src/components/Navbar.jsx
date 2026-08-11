@@ -1,11 +1,11 @@
 import { NavLink } from "react-router-dom";
 
-const Navbar = ({ basketCount = 0 }) => {
+const Navbar = ({ basketCount = 0, notificationCount = 0, isNotificationsUnread = false }) => {
   return (
     <header className="navbar">
       <div className="nav-inner container">
         <NavLink to="/" className="brand" end>
-          <span className="brand-mark">🍰</span>
+          <span className="brand-mark">🧁</span>
           <span>Cake Delight</span>
         </NavLink>
 
@@ -14,7 +14,12 @@ const Navbar = ({ basketCount = 0 }) => {
             Home
           </NavLink>
           <NavLink to="/orders">Orders</NavLink>
-          <NavLink to="/notifications">Notifications</NavLink>
+          <NavLink to="/notifications" className="notification-link">
+            Notifications
+            {notificationCount > 0 && isNotificationsUnread && (
+              <span className="notification-dot" aria-label="New notifications" />
+            )}
+          </NavLink>
         </nav>
 
         <NavLink to="/basket" className="basket-link">

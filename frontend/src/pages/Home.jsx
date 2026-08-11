@@ -11,11 +11,23 @@ const Home = ({ setBasketCount, basketCount }) => {
   const [cakes, setCakes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
   const fetchCakes = async () => {
     try {
       setLoading(true);
-      const response = await api.get("/cakes");
+
+      const params = {
+        ...(searchTerm && { name: searchTerm }),
+        ...(selectedCategory && { category: selectedCategory }),
+        ...(minPrice && { minPrice }),
+        ...(maxPrice && { maxPrice })
+      };
+
+      const response = await api.get("/cakes", { params });
       const cakesData = response?.data?.data || [];
       const enriched = await Promise.all(
         cakesData.map(async (cake) => {
@@ -60,7 +72,7 @@ const Home = ({ setBasketCount, basketCount }) => {
 
   useEffect(() => {
     fetchCakes();
-  }, []);
+  }, [searchTerm, selectedCategory, minPrice, maxPrice]);
 
   return (
     <div className="page-shell">
@@ -90,6 +102,47 @@ const Home = ({ setBasketCount, basketCount }) => {
       </section>
 
       <section id="popular-cakes" className="container section-block">
+        <div className="filter-bar">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search cakes"
+            className="filter-input"
+          />
+
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="filter-select"
+          >
+            <option value="">All Categories</option>
+            <option value="Chocolate">Chocolate</option>
+            <option value="Vanilla">Vanilla</option>
+            <option value="Strawberry">Strawberry</option>
+            <option value="Butterscotch">Butterscotch</option>
+            <option value="Black Forest">Black Forest</option>
+          </select>
+
+          <input
+            type="number"
+            min="0"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            placeholder="Min price"
+            className="filter-input small"
+          />
+
+          <input
+            type="number"
+            min="0"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            placeholder="Max price"
+            className="filter-input small"
+          />
+        </div>
+
         <div className="section-heading-row">
           <div>
             <span className="eyebrow">Our collection</span>
@@ -103,14 +156,21 @@ const Home = ({ setBasketCount, basketCount }) => {
           <Loading text="Loading cakes..." />
         ) : (
           <div className="cake-grid">
-            {cakes.map((cake) => (
-              <CakeCard
-                key={cake._id}
-                cake={cake}
-                onAddToBasket={addToBasket}
-                basketCount={basketCount}
-              />
-            ))}
+            {cakes.length > 0 ? (
+              cakes.map((cake) => (
+                <CakeCard
+                  key={cake._id}
+                  cake={cake}
+                  onAddToBasket={addToBasket}
+                  basketCount={basketCount}
+                />
+              ))
+            ) : (
+              <div className="empty-state-box full-width">
+                <h3>No cakes found</h3>
+                <p>Try a different search or filter selection.</p>
+              </div>
+            )}
           </div>
         )}
       </section>
