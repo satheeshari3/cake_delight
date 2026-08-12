@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service
+          image: cake-order-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3002
+          env:
+            - name: PORT
+              value: "3002"
+
+            - name: MONGO_URI
+              value: "mongodb://mongodb:27017/cake_delight_orders"
+
+            - name: CATALOG_SERVICE_URL
+              value: "http://catalog-service:3001"
+
+            - name: RABBITMQ_URL
+              value: "amqp://rabbitmq:5672"

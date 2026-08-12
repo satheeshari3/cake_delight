@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: cake-api-gateway
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+
+            - name: CATALOG_SERVICE_URL
+              value: "http://catalog-service:3001"
+
+            - name: RATING_SERVICE_URL
+              value: "http://rating-service:3003"
+
+            - name: ORDER_SERVICE_URL
+              value: "http://order-service:3002"
+
+            - name: NOTIFICATION_SERVICE_URL
+              value: "http://notification-service:3004"

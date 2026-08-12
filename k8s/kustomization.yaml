@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: cake-delight
+
+resources:
+  - namespace.yaml
+  - mongodb/pvc.yaml
+  - mongodb/deployment.yaml
+  - mongodb/service.yaml
+  - rabbitmq/deployment.yaml
+  - rabbitmq/service.yaml
+  - catalog/deployment.yaml
+  - catalog/service.yaml
+  - order/deployment.yaml
+  - order/service.yaml
+  - rating/deployment.yaml
+  - rating/service.yaml
+  - notification/deployment.yaml
+  - notification/service.yaml
+  - api-gateway/deployment.yaml
+  - api-gateway/service.yaml
+  - frontend/deployment.yaml
+  - frontend/service.yaml
