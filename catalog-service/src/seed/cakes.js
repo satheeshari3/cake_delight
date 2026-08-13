@@ -26,12 +26,12 @@ const cakes = [
     imageReference: "/images/chocolate-lava.jpg"
   },
   {
-    name: "Chocolate Truffle Cake",
-    description: "Rich chocolate cake with chocolate ganache",
-    category: "Chocolate",
-    price: 650,
+    name: "Blueberry",
+    description: "Rich bluebrry cake with chocolate ganache",
+    category: "fruit",
+    price: 800,
     availability: true,
-    imageReference: "/images/chocolate-truffle.jpg"
+    imageReference: "/images/blueberry.jpg"
   }
 ];
 

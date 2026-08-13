@@ -162,6 +162,27 @@ kubectl delete namespace cake-delight
 
 -----------------------------------------------------------------------------------
 
+## Screenshots
+
+### Cake Catalog
+![Cake Catalog](docs/screenshots/cake-catalog.png)
+
+### Catalog Filtering
+![Catalog Filtering](docs/screenshots/cake-filtering.png)
+
+### Cake Rating
+![Cake Rating](docs/screenshots/rating.png)
+
+### Basket
+![Basket](docs/screenshots/basket.png)
+
+### Checkout
+![Checkout](docs/screenshots/order-completed.png)
+
+### Order Confirmation
+![Order Confirmation](docs/screenshots/notification.png)
+
+
 ## Notes
 
 - The frontend communicates with the API Gateway through the gateway route layer.
