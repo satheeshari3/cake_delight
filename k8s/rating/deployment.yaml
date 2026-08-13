@@ -23,3 +23,15 @@ spec:
               value: "3003"
             - name: MONGO_URI
               value: "mongodb://mongodb:27017/cake_rating_db"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3003
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3003
+            initialDelaySeconds: 20
+            periodSeconds: 20

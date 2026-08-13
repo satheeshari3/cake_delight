@@ -33,3 +33,15 @@ spec:
 
             - name: NOTIFICATION_SERVICE_URL
               value: "http://notification-service:3004"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 20

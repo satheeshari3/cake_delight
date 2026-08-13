@@ -30,3 +30,15 @@ spec:
 
             - name: RABBITMQ_URL
               value: "amqp://rabbitmq:5672"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3002
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3002
+            initialDelaySeconds: 20
+            periodSeconds: 20

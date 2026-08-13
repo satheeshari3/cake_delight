@@ -110,6 +110,22 @@ docker compose down
 
 > This stops the full stack without deleting the MongoDB data volume.
 
+### Health checks
+
+Each service exposes a basic `/health` endpoint and also includes a Docker `HEALTHCHECK` for runtime monitoring.
+
+Examples:
+
+```bash
+curl http://localhost:3000/health
+curl http://localhost:3001/health
+curl http://localhost:3002/health
+curl http://localhost:3003/health
+curl http://localhost:3004/health
+```
+
+These endpoints confirm that the API gateway, catalog, order, rating, and notification services are running.
+
 --------------------------------------------------------------------------------
 
 ## Kubernetes
